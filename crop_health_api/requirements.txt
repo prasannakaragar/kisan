@@ -1,8 +1,8 @@
-flask==3.0.3
-flask-cors==4.0.1
-Pillow==10.3.0
-numpy==1.26.4
-opencv-python-headless==4.9.0.80
-google-genai==1.0.1
-gunicorn==22.0.0
-python-dotenv==1.0.1
+flask
+flask-cors
+Pillow
+numpy
+opencv-python-headless
+google-genai
+gunicorn
+python-dotenv
