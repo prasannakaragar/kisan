@@ -17,10 +17,12 @@ function saveHistory(h) {
 
 // ─── Image compression helper ─────────────────────────────────────────────────
 async function compressImage(file) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Failed to read image file"));
     reader.onload = (e) => {
       const img = new window.Image();
+      img.onerror = () => reject(new Error("Failed to load image"));
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let { width, height } = img;
@@ -31,8 +33,18 @@ async function compressImage(file) {
         }
         canvas.width = width;
         canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.82);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error("Failed to get canvas context"));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+        canvas.toBlob((blob) => {
+          if (blob) resolve({ blob, dataUrl });
+          else reject(new Error("Failed to compress image"));
+        }, 'image/jpeg', 0.82);
       };
       img.src = e.target.result;
     };
@@ -64,10 +76,12 @@ function ConfidenceBar({ value }) {
 
 // ─── Result card ──────────────────────────────────────────────────────────────
 function ResultCard({ result, imageUrl }) {
+  const noCropDetected = !result.crop || result.crop.toLowerCase() === 'none' || result.crop.toLowerCase().includes('not detected') || result.crop.toLowerCase().includes('unknown') || result.crop.toLowerCase().includes('not a plant') || result.crop.toLowerCase().includes('not a crop');
+  
   const isHealthy = result.isHealthy;
-  const accent = isHealthy ? '#16a34a' : '#dc2626';
-  const accentBg = isHealthy ? '#f0fdf4' : '#fef2f2';
-  const accentBorder = isHealthy ? '#bbf7d0' : '#fecaca';
+  const accent = noCropDetected ? '#6b7280' : (isHealthy ? '#16a34a' : '#dc2626');
+  const accentBg = noCropDetected ? '#f3f4f6' : (isHealthy ? '#f0fdf4' : '#fef2f2');
+  const accentBorder = noCropDetected ? '#d1d5db' : (isHealthy ? '#bbf7d0' : '#fecaca');
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 28 }} className="result-grid">
@@ -77,35 +91,43 @@ function ResultCard({ result, imageUrl }) {
           <img src={imageUrl} alt="Scanned crop" style={{ width: '100%', maxHeight: 260, objectFit: 'cover', display: 'block' }} />
           <div style={{
             position: 'absolute', top: 12, left: 12,
-            background: isHealthy ? '#16a34a' : '#dc2626',
+            background: accent,
             color: 'white', borderRadius: 99, padding: '5px 14px',
             fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6,
             boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
           }}>
-            {isHealthy ? '✅' : '⚠️'}
-            {isHealthy ? 'Healthy' : 'Disease Detected'}
+            <span>{noCropDetected ? '❓' : (isHealthy ? '✅' : '⚠️')}</span>
+            <span>{noCropDetected ? 'Crop Not Detected' : (isHealthy ? 'Healthy' : 'Disease Detected')}</span>
           </div>
 
         </div>
         <div style={{ padding: '16px 18px' }}>
           <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 6 }}>
-            🌿 <strong>Crop:</strong> {result.crop}
+            🌿 <strong>Crop:</strong> {noCropDetected ? 'Not Detected' : result.crop}
           </div>
-          {!isHealthy && (
-            <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 10 }}>
-              🦠 <strong>Disease:</strong>{' '}
-              <span style={{ color: accent, fontWeight: 600 }}>{result.disease}</span>
+          {noCropDetected ? (
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#4b5563', marginBottom: 10 }}>
+              <span>No crop was detected in this image. Please upload a clear photo of a plant leaf.</span>
             </div>
-          )}
-          {isHealthy && (
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#16a34a', marginBottom: 10 }}>
-              Your crop looks healthy! 🎉
-            </div>
+          ) : (
+            <>
+              {!isHealthy && (
+                <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 10 }}>
+                  🦠 <strong>Disease:</strong>{' '}
+                  <span style={{ color: accent, fontWeight: 600 }}>{result.disease}</span>
+                </div>
+              )}
+              {isHealthy && (
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#16a34a', marginBottom: 10 }}>
+                  <span>Your crop looks healthy! 🎉</span>
+                </div>
+              )}
+            </>
           )}
           <ConfidenceBar value={result.confidence} />
           {result.lowConfidence && (
             <div style={{ marginTop: 8, padding: '6px 10px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
-              ⚡ Low confidence — try a clearer, well-lit photo
+              <span>⚡ Low confidence — try a clearer, well-lit photo</span>
             </div>
           )}
           <div style={{ marginTop: 10, fontSize: 11, color: '#9ca3af' }}>
@@ -116,20 +138,24 @@ function ResultCard({ result, imageUrl }) {
 
       {/* Right — recommendations */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* Prevention always shown */}
-        {result.prevention.length > 0 && (
-          <Section icon="🛡️" title="Preventive Measures" color="#1d4ed8" bg="#eff6ff" border="#bfdbfe" items={result.prevention} />
-        )}
-        {!isHealthy && (
+        {!noCropDetected && (
           <>
-            {result.treatment.length > 0 && (
-              <Section icon="💊" title="Treatment Steps" color="#dc2626" bg="#fef2f2" border="#fecaca" items={result.treatment} />
+            {/* Prevention always shown */}
+            {result.prevention.length > 0 && (
+              <Section icon="🛡️" title="Preventive Measures" color="#1d4ed8" bg="#eff6ff" border="#bfdbfe" items={result.prevention} />
             )}
-            {result.fertilizers.length > 0 && (
-              <Section icon="🌱" title="Recommended Fertilizers" color="#16a34a" bg="#f0fdf4" border="#bbf7d0" items={result.fertilizers} />
-            )}
-            {result.pesticides.length > 0 && (
-              <Section icon="🧪" title="Pesticides / Chemicals" color="#7c3aed" bg="#f5f3ff" border="#ddd6fe" items={result.pesticides} />
+            {!isHealthy && (
+              <>
+                {result.treatment.length > 0 && (
+                  <Section icon="💊" title="Treatment Steps" color="#dc2626" bg="#fef2f2" border="#fecaca" items={result.treatment} />
+                )}
+                {result.fertilizers.length > 0 && (
+                  <Section icon="🌱" title="Recommended Fertilizers" color="#16a34a" bg="#f0fdf4" border="#bbf7d0" items={result.fertilizers} />
+                )}
+                {result.pesticides.length > 0 && (
+                  <Section icon="🧪" title="Pesticides / Chemicals" color="#7c3aed" bg="#f5f3ff" border="#ddd6fe" items={result.pesticides} />
+                )}
+              </>
             )}
           </>
         )}
@@ -168,20 +194,22 @@ function HistoryPanel({ history, onSelect, onClear }) {
         </button>
       </div>
       <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 8 }}>
-        {history.map((h, i) => (
+        {history.map((h, i) => {
+          const noCropDetected = !h.result.crop || h.result.crop.toLowerCase() === 'none' || h.result.crop.toLowerCase().includes('not detected') || h.result.crop.toLowerCase().includes('unknown') || h.result.crop.toLowerCase().includes('not a plant') || h.result.crop.toLowerCase().includes('not a crop');
+          return (
           <div key={i} onClick={() => onSelect(h)}
             style={{ flexShrink: 0, width: 120, cursor: 'pointer', borderRadius: 12, border: '1px solid #e5e7eb', overflow: 'hidden', background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', transition: 'transform 0.15s' }}
             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
             onMouseLeave={e => e.currentTarget.style.transform = ''}>
             <img src={h.imageUrl} alt="scan" style={{ width: '100%', height: 80, objectFit: 'cover', display: 'block' }} />
             <div style={{ padding: '8px 10px' }}>
-              <div style={{ fontSize: 11, fontWeight: 600, color: h.result.isHealthy ? '#16a34a' : '#dc2626', marginBottom: 2 }}>
-                {h.result.isHealthy ? '✅ Healthy' : '⚠️ ' + (h.result.disease || 'Disease')}
+              <div style={{ fontSize: 11, fontWeight: 600, color: noCropDetected ? '#6b7280' : (h.result.isHealthy ? '#16a34a' : '#dc2626'), marginBottom: 2 }}>
+                <span>{noCropDetected ? '❓ Not Detected' : (h.result.isHealthy ? '✅ Healthy' : '⚠️ ' + (h.result.disease || 'Disease'))}</span>
               </div>
-              <div style={{ fontSize: 10, color: '#9ca3af' }}>{h.result.crop}</div>
+              <div style={{ fontSize: 10, color: '#9ca3af' }}><span>{noCropDetected ? 'Unknown' : h.result.crop}</span></div>
             </div>
           </div>
-        ))}
+        )})}
       </div>
     </div>
   );
@@ -208,17 +236,29 @@ export default function CropHealthAI() {
       .then(res => res.json())
       .then(data => setDatasetStatus(data.datasetStatus || 'Not found'))
       .catch(() => setDatasetStatus('API Offline'));
+
+    // Cleanup on unmount
+    return () => {
+      stopCamera();
+    };
   }, []);
 
   // ── File upload ─────────────────────────────────────────────────────────────
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     stopCamera();
     setImageFile(file);
-    setImageUrl(URL.createObjectURL(file));
-    setResult(null);
-    setError(null);
+    
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setImageUrl(ev.target.result);
+      setResult(null);
+      setError(null);
+    };
+    reader.onerror = () => setError("Failed to read selected image.");
+    reader.readAsDataURL(file);
   };
 
   // ── Camera ──────────────────────────────────────────────────────────────────
@@ -227,7 +267,6 @@ export default function CropHealthAI() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: 1280 } });
       streamRef.current = stream;
-      if (videoRef.current) videoRef.current.srcObject = stream;
       setCameraActive(true);
       setResult(null);
       setImageUrl(null);
@@ -235,6 +274,13 @@ export default function CropHealthAI() {
       setError('Camera access denied. Please allow camera permission and try again.');
     }
   };
+
+  // Bind stream to video element when it renders
+  useEffect(() => {
+    if (cameraActive && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [cameraActive]);
 
   const stopCamera = () => {
     if (streamRef.current) {
@@ -246,15 +292,31 @@ export default function CropHealthAI() {
 
   const captureFrame = () => {
     if (!videoRef.current) return;
+    
+    // Check if video is actually ready
+    if (videoRef.current.videoWidth === 0 || videoRef.current.videoHeight === 0) {
+      setError("Camera stream not ready. Please wait a moment.");
+      return;
+    }
+
     const canvas = document.createElement('canvas');
     canvas.width  = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
-    canvas.getContext('2d').drawImage(videoRef.current, 0, 0);
+    
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(videoRef.current, 0, 0);
+    
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
     canvas.toBlob((blob) => {
+      if (!blob) {
+        setError("Failed to capture image from camera. Please try again.");
+        return;
+      }
+      
       stopCamera();
       const file = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
       setImageFile(file);
-      setImageUrl(URL.createObjectURL(blob));
+      setImageUrl(dataUrl);
       setResult(null);
     }, 'image/jpeg', 0.9);
   };
@@ -266,9 +328,14 @@ export default function CropHealthAI() {
     setError(null);
     setResult(null);
     try {
-      const compressed = await compressImage(imageFile);
+      const { blob, dataUrl } = await compressImage(imageFile);
+      setImageUrl(dataUrl); // Use compressed version for UI and history
+      
       const formData   = new FormData();
-      formData.append('image', compressed, 'crop.jpg');
+      formData.append('image', blob, 'crop.jpg');
+      
+      const lang = localStorage.getItem('kisan_lang') || 'en';
+      formData.append('language', lang);
 
       const res = await fetch(`${API_URL}/analyze-crop`, { method: 'POST', body: formData });
       if (!res.ok) {
@@ -278,8 +345,8 @@ export default function CropHealthAI() {
       const data = await res.json();
       setResult(data);
 
-      // Save to history
-      const entry = { result: data, imageUrl, ts: Date.now() };
+      // Save to history (now uses Data URL which persists and won't be revoked)
+      const entry = { result: data, imageUrl: dataUrl, ts: Date.now() };
       const updated = [entry, ...history].slice(0, 20);
       setHistory(updated);
       saveHistory(updated);
@@ -401,8 +468,13 @@ export default function CropHealthAI() {
                 <button id="btn-analyse-crop" onClick={analyseImage} disabled={loading}
                   style={{ background: loading ? '#9ca3af' : '#16a34a', color: 'white', border: 'none', borderRadius: 10, padding: '10px 24px', fontWeight: 700, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, transition: 'background 0.2s' }}>
                   {loading ? (
-                    <><span style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>⏳</span> Analysing…</>
-                  ) : '🔬 Analyse Crop'}
+                    <>
+                      <span style={{ display: 'inline-block', animation: 'spin 1s linear infinite' }}>⏳</span>
+                      <span>Analysing…</span>
+                    </>
+                  ) : (
+                    <span>🔬 Analyse Crop</span>
+                  )}
                 </button>
                 <button id="btn-reset-scan" onClick={reset} style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 10, padding: '10px 18px', fontSize: 13, color: '#6b7280', cursor: 'pointer' }}>
                   ✕ Reset

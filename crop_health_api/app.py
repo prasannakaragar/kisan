@@ -33,16 +33,19 @@ CORS(app, origins=["http://localhost:3000", "https://*.vercel.app"])
 
 MAX_BYTES = 8 * 1024 * 1024  # 8 MB limit
 
-def analyze_image_with_gemini(image_bytes):
+def analyze_image_with_gemini(image_bytes, language="en"):
     """
     Sends the crop image to Gemini Vision API and parses the structured response.
     """
     if not GEMINI_API_KEY or GEMINI_API_KEY == "your_gemini_api_key_here":
         raise ValueError("Gemini API Key is missing. Please check your .env file.")
 
-    prompt = """
+    prompt = f"""
     You are a professional agronomist specializing in crop pathology.
     Analyze the provided image of a crop/plant.
+    
+    IMPORTANT INSTRUCTION: Provide all text content strictly in the ISO-639-1 language code '{language}'.
+    For example, if the code is 'hi', output in Hindi; if 'kn', output in Kannada; if 'en', output in English.
     
     Tasks:
     1. Identify the crop name.
@@ -51,16 +54,16 @@ def analyze_image_with_gemini(image_bytes):
     4. Provide actionable advice for farmers.
     
     Output MUST be a valid JSON object exactly as follows:
-    {
-      "crop": "Common name of the crop",
-      "disease": "Specific disease name or 'None' if healthy",
+    {{
+      "crop": "Common name of the crop (in {language})",
+      "disease": "Specific disease name or 'None' if healthy (in {language})",
       "isHealthy": true/false,
       "confidence": "Estimated accuracy (e.g., 98%)",
-      "fertilizers": ["List 2-3 specific fertilizers"],
-      "pesticides": ["List 2-3 specific pesticides if applicable, else empty"],
-      "treatment": ["Step-by-step treatment guide"],
-      "prevention": ["Prevention tips for the future"]
-    }
+      "fertilizers": ["List 2-3 specific fertilizers (in {language})"],
+      "pesticides": ["List 2-3 specific pesticides if applicable, else empty (in {language})"],
+      "treatment": ["Step-by-step treatment guide (in {language})"],
+      "prevention": ["Prevention tips for the future (in {language})"]
+    }}
     
     Strictly return ONLY the JSON object. No preamble, no markdown formatting (no ```json).
     """
@@ -129,7 +132,8 @@ def analyze_crop():
 
     # 2. Inference via Gemini
     try:
-        analysis_result = analyze_image_with_gemini(image_bytes)
+        language = request.form.get("language", "en")
+        analysis_result = analyze_image_with_gemini(image_bytes, language)
         
         # 3. Finalize response
         analysis_result["processingMs"] = round((time.time() - t0) * 1000)
