@@ -28,8 +28,8 @@ else:
 
 
 app = Flask(__name__)
-# Allow CORS for all origins in production to avoid deployment blocks
-CORS(app, resources={r"/*": {"origins": "*"}})
+# Allow CORS for local development and potential production domains
+CORS(app, origins=["http://localhost:3000", "https://*.vercel.app"])
 
 MAX_BYTES = 8 * 1024 * 1024  # 8 MB limit
 
@@ -42,7 +42,26 @@ def analyze_image_with_gemini(image_bytes, language="en"):
 
     prompt = f"""
     You are a professional agronomist specializing in crop pathology.
-    Analyze the provided image of a crop/plant.
+    
+    CRITICAL FIRST STEP: Before doing ANY analysis, carefully examine the image and determine
+    whether it contains a plant, crop, leaf, or any vegetation. 
+    
+    If the image does NOT contain a plant, crop, leaf, or vegetation (e.g., it shows a human,
+    animal, vehicle, building, food item, random object, selfie, or anything that is NOT a plant),
+    you MUST return this exact JSON:
+    {{
+      "crop": "Not a crop",
+      "disease": "None",
+      "isHealthy": false,
+      "confidence": "0%",
+      "isCropDetected": false,
+      "fertilizers": [],
+      "pesticides": [],
+      "treatment": [],
+      "prevention": []
+    }}
+    
+    ONLY if the image clearly contains a plant/crop/leaf/vegetation, proceed with full analysis:
     
     IMPORTANT INSTRUCTION: Provide all text content strictly in the ISO-639-1 language code '{language}'.
     For example, if the code is 'hi', output in Hindi; if 'kn', output in Kannada; if 'en', output in English.
@@ -59,6 +78,7 @@ def analyze_image_with_gemini(image_bytes, language="en"):
       "disease": "Specific disease name or 'None' if healthy (in {language})",
       "isHealthy": true/false,
       "confidence": "Estimated accuracy (e.g., 98%)",
+      "isCropDetected": true,
       "fertilizers": ["List 2-3 specific fertilizers (in {language})"],
       "pesticides": ["List 2-3 specific pesticides if applicable, else empty (in {language})"],
       "treatment": ["Step-by-step treatment guide (in {language})"],
@@ -158,8 +178,7 @@ def health():
         "config": {
             "api_key_set": bool(GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_api_key_here"),
             "max_upload_mb": MAX_BYTES // (1024 * 1024)
-        },
-        "datasetStatus": "Gemini 1.5 Flash (Active)"
+        }
     })
 
 if __name__ == "__main__":

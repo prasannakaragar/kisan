@@ -15,6 +15,8 @@ import BusinessHub from './pages/BusinessHub';
 import SmartIrrigation from './pages/SmartIrrigation';
 import Subsidy from './pages/Subsidy';
 import CropHealthAI from './pages/CropHealthAI';
+import UserGuide from './pages/UserGuide';
+import CropBuyers from './pages/CropBuyers';
 import './styles/global.css';
 
 export default function App() {
@@ -37,6 +39,8 @@ export default function App() {
           <Route path="/irrigation" element={<SmartIrrigation />} />
           <Route path="/subsidy" element={<Subsidy />} />
           <Route path="/crop-health" element={<CropHealthAI />} />
+          <Route path="/guide" element={<UserGuide />} />
+          <Route path="/buyers" element={<CropBuyers />} />
         </Routes>
       </main>
       <footer style={{ textAlign: 'center', padding: '24px 16px', color: '#9ca3af', fontSize: 13, borderTop: '1px solid #e5e7eb', background: 'white', marginTop: 40 }}>

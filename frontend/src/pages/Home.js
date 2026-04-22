@@ -14,10 +14,12 @@ const MODULES = [
   { path: '/business', icon: '🏪', title: 'Business Hub', desc: 'Start a pipe shop, dairy or tractor rental. Mudra loan guide and business plan.', color: '#4527a0', bg: '#ede7f6', tag: 'New Income' },
   { path: '/subsidy', icon: '💰', title: 'Govt Subsidies', desc: 'Direct capital subsidies on drip, machinery, solar pumps, cold storage & polyhouse. Up to 90% subsidy.', color: '#00695c', bg: '#e0f2f1', tag: 'Save Money' },
   { path: '/crop-health', icon: '🔬', title: 'Crop Health AI', desc: 'Upload or capture a leaf photo. AI detects 38 plant diseases instantly with fertilizer & treatment advice.', color: '#b45309', bg: '#fef3c7', tag: 'AI Powered' },
+  { path: '/buyers', icon: '🏪', title: 'Crop Buyers & Tenders', desc: 'Find government APMC mandis, FCI, private companies & export channels to sell your crops at the best price.', color: '#c2410c', bg: '#fff7ed', tag: 'Best Price' },
+  { path: '/guide', icon: '📘', title: 'User Guide', desc: 'Step-by-step guide for every feature. Learn how to use the platform easily, even if you are new to technology.', color: '#2563eb', bg: '#eff6ff', tag: 'Help' },
 ];
 
 const STATS = [
-  { num: '12', label: 'Complete modules' },
+  { num: '14', label: 'Complete modules' },
   { num: '7,000+', label: 'Mandis tracked' },
   { num: '38', label: 'Disease classes' },
   { num: '0%', label: 'Commission' },
@@ -30,7 +32,7 @@ export default function Home() {
       {/* Hero */}
       <div style={{ background: 'linear-gradient(135deg,#1b5e20 0%,#2d6a2d 60%,#33691e 100%)', borderRadius: 16, padding: '44px 28px', color: 'white', marginBottom: 28, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ fontSize: 12, background: 'rgba(255,255,255,0.15)', display: 'inline-block', padding: '4px 14px', borderRadius: 20, marginBottom: 14 }}>🇮🇳 Complete Super App for Indian Farmers — All 12 Modules</div>
+          <div style={{ fontSize: 12, background: 'rgba(255,255,255,0.15)', display: 'inline-block', padding: '4px 14px', borderRadius: 20, marginBottom: 14 }}>🇮🇳 Complete Super App for Indian Farmers — All 14 Modules</div>
           <h1 style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.2, marginBottom: 12 }}>Kisan Platform 🌾</h1>
           <p style={{ fontSize: 15, opacity: 0.9, maxWidth: 520, marginBottom: 24, lineHeight: 1.7 }}>
             Live crop prices, government schemes &amp; subsidies, labour hiring, marketplace, barter, AI crop advisor, fear crusher, videos, finance and business hub — everything a farmer needs, free forever.
@@ -54,7 +56,7 @@ export default function Home() {
       </div>
 
       {/* Module grid */}
-      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 14 }}>All 12 Modules</h2>
+      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 14 }}>All 14 Modules</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 14, marginBottom: 36 }}>
         {MODULES.map(mod => (
           <div key={mod.path} className="card" onClick={() => navigate(mod.path)}

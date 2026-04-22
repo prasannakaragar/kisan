@@ -16,6 +16,8 @@ const NAV_ITEMS = [
   { path: '/finance', label: 'Finance' },
   { path: '/business', label: 'Business' },
   { path: '/irrigation', label: 'Irrigation' },
+  { path: '/buyers', label: '🏪 Buyers' },
+  { path: '/guide', label: '📘 Guide' },
 ];
 
 // ─── Language Switcher ──────────────────────────────────────────────────────

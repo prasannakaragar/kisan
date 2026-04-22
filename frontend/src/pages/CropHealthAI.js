@@ -76,7 +76,7 @@ function ConfidenceBar({ value }) {
 
 // ─── Result card ──────────────────────────────────────────────────────────────
 function ResultCard({ result, imageUrl }) {
-  const noCropDetected = !result.crop || result.crop.toLowerCase() === 'none' || result.crop.toLowerCase().includes('not detected') || result.crop.toLowerCase().includes('unknown') || result.crop.toLowerCase().includes('not a plant') || result.crop.toLowerCase().includes('not a crop');
+  const noCropDetected = result.isCropDetected === false || !result.crop || result.crop.toLowerCase() === 'none' || result.crop.toLowerCase().includes('not detected') || result.crop.toLowerCase().includes('unknown') || result.crop.toLowerCase().includes('not a plant') || result.crop.toLowerCase().includes('not a crop');
   
   const isHealthy = result.isHealthy;
   const accent = noCropDetected ? '#6b7280' : (isHealthy ? '#16a34a' : '#dc2626');
@@ -195,7 +195,7 @@ function HistoryPanel({ history, onSelect, onClear }) {
       </div>
       <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 8 }}>
         {history.map((h, i) => {
-          const noCropDetected = !h.result.crop || h.result.crop.toLowerCase() === 'none' || h.result.crop.toLowerCase().includes('not detected') || h.result.crop.toLowerCase().includes('unknown') || h.result.crop.toLowerCase().includes('not a plant') || h.result.crop.toLowerCase().includes('not a crop');
+          const noCropDetected = h.result.isCropDetected === false || !h.result.crop || h.result.crop.toLowerCase() === 'none' || h.result.crop.toLowerCase().includes('not detected') || h.result.crop.toLowerCase().includes('unknown') || h.result.crop.toLowerCase().includes('not a plant') || h.result.crop.toLowerCase().includes('not a crop');
           return (
           <div key={i} onClick={() => onSelect(h)}
             style={{ flexShrink: 0, width: 120, cursor: 'pointer', borderRadius: 12, border: '1px solid #e5e7eb', overflow: 'hidden', background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', transition: 'transform 0.15s' }}
