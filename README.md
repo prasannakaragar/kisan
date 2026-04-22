@@ -6,7 +6,7 @@ A complete super app for Indian farmers — built with React + Node.js.
 - 📈 **Live Crop Prices** — Real-time mandi prices via AgMarknet, 30-day trend charts, price alerts
 - 🏛️ **Government Schemes** — Central + state scheme finder with eligibility checker
 - 👷 **Labour Hiring** — Post harvest jobs, workers apply directly, SMS-ready
-- 🛒 **Farmer Marketplace** — Buy/sell equipment, seeds, livestock, produce — farmer to farmer
+- 🛒 **Farmer Marketplace** — Buy/sell equipment, seeds, livestock, produce — farmer to farmer.
 
 ---
 
