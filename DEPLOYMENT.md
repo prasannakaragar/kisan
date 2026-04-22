@@ -68,7 +68,7 @@ This is the React application located in `kisan/frontend`.
 
 ## 💡 Important Notes
 
-- **CORS Support**: Both backends are already configured to allow requests from `*.vercel.app`.
+- **CORS Support**: Both backends are configured to allow cross-origin requests. The Python API now uses a wildcard origin (`*`) to ensure maximum compatibility with Vercel deployments.
 - **Sleeping Services**: If you are using Render's **Free Tier**, the services will "spin down" after inactivity. The first request after a break might take 30-60 seconds to respond while the server wakes up.
 - **AI Performance**: The Crop Health AI uses Gemini 1.5 Flash, which is fast and efficient for production use.
 - **Image Size**: The frontend automatically compresses images before sending to the AI API to save bandwidth and ensure it works on rural networks.

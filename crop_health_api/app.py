@@ -28,8 +28,8 @@ else:
 
 
 app = Flask(__name__)
-# Allow CORS for local development and potential production domains
-CORS(app, origins=["http://localhost:3000", "https://*.vercel.app"])
+# Allow CORS for all origins in production to avoid deployment blocks
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 MAX_BYTES = 8 * 1024 * 1024  # 8 MB limit
 
@@ -158,7 +158,8 @@ def health():
         "config": {
             "api_key_set": bool(GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_api_key_here"),
             "max_upload_mb": MAX_BYTES // (1024 * 1024)
-        }
+        },
+        "datasetStatus": "Gemini 1.5 Flash (Active)"
     })
 
 if __name__ == "__main__":
