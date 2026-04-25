@@ -5,9 +5,15 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kisan';
+
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB Successfully'))
-  .catch(err => console.error('MongoDB Connection Error:', err));
+  .catch(err => {
+    console.error('MongoDB Connection Error:', err.message);
+    console.warn('⚠️ SERVER WARNING: Database not connected. Post features will not work.');
+  });
 
 const cropPricesRouter = require('./routes/cropPrices');
 const schemesRouter = require('./routes/schemes');
@@ -31,23 +37,36 @@ const PORT = process.env.PORT || 5000;
 
 app.set('trust proxy', 1);
 
+// More robust CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://kisan-wheat.vercel.app',
+  'https://kisan-platform.vercel.app'
+];
+
 app.use(cors({
   origin: function (origin, callback) {
-    const isLocal = !origin || 
-                   origin.startsWith('http://localhost') || 
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    const isLocal = origin.startsWith('http://localhost') || 
                    origin.startsWith('http://127.0.0.1') || 
-                   /^http:\/\/10\.\d+\.\d+\.\d+/.test(origin) || 
-                   /^http:\/\/192\.168\.\d+\.\d+/.test(origin);
+                   origin.includes('192.168.') || 
+                   origin.includes('10.');
                    
-    const isVercel = origin && origin.endsWith('.vercel.app');
+    const isVercel = origin.endsWith('.vercel.app');
 
-    if (isLocal || isVercel) {
+    if (isLocal || isVercel || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log('CORS Blocked Origin:', origin);
+      console.warn('🚫 CORS Blocked Origin:', origin);
       callback(new Error('Not allowed by CORS'));
     }
-  }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 

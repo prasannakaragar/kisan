@@ -309,7 +309,7 @@ export default function CropHealthAI() {
           setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         },
         (err) => console.warn("Geolocation error:", err.message),
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     }
 

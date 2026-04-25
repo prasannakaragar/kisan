@@ -203,8 +203,14 @@ export default function Labour() {
 
   async function fetchJobs() {
     setLoading(true);
-    try { const res = await getJobs(filters); setJobs(res.data); }
-    catch (e) { console.error(e); }
+    try { 
+      const res = await getJobs(filters); 
+      setJobs(res.data); 
+    }
+    catch (e) { 
+      console.error(e); 
+      setError("Unable to connect to the server. Please check your internet or try again later.");
+    }
     finally { setLoading(false); }
   }
 
