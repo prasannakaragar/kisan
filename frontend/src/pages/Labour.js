@@ -198,6 +198,7 @@ export default function Labour() {
   const [showPostModal, setShowPostModal] = useState(false);
   const [applyJob, setApplyJobState] = useState(null);
   const [tab, setTab] = useState('browse');
+  const [error, setError] = useState(null);
 
   useEffect(() => { fetchJobs(); }, []);
 
@@ -233,6 +234,8 @@ export default function Labour() {
           </button>
         ))}
       </div>
+      
+      {error && <div className="error-msg" style={{ marginBottom: 20 }}>{error}</div>}
 
       <div className="filter-bar">
         <select value={filters.state} onChange={e => setFilters(f => ({ ...f, state: e.target.value }))}>
