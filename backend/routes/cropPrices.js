@@ -19,7 +19,7 @@ const CROP_CATEGORIES = {
   commercial: ['Cotton','Sugarcane','Jute','Tobacco'],
 };
 
-const ALL_CROPS = Object.values(CROP_CATEGORIES).flat();
+const ALL_CROPS = [...new Set(Object.values(CROP_CATEGORIES).flat())];
 
 const ALL_STATES = [
   'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa',
@@ -364,3 +364,6 @@ router.get('/live-check', async (req, res) => {
 });
 
 module.exports = router;
+module.exports.FALLBACK_DATA = FALLBACK_DATA;
+module.exports.ALL_CROPS = ALL_CROPS;
+module.exports.ALL_STATES = ALL_STATES;

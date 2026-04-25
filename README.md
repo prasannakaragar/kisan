@@ -95,7 +95,7 @@ Open **two terminal windows**:
 cd kisan-platform/backend
 npm run dev
 ```
-You should see: `Kisan API running on port 5000`
+You should see: `Kisan Platform API running on port 5000`
 
 **Terminal 2 — Frontend:**
 ```bash

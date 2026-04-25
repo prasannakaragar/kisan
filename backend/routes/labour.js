@@ -146,3 +146,4 @@ router.get('/work-types', (req, res) => {
 });
 
 module.exports = router;
+module.exports.JOBS = JOBS;

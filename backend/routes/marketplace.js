@@ -180,3 +180,4 @@ router.patch('/:id/sold', (req, res) => {
 });
 
 module.exports = router;
+module.exports.LISTINGS = LISTINGS;

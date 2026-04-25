@@ -647,6 +647,83 @@ const SUBSIDIES = [
         last_updated: '2025-01',
         tags: ['Telangana', 'drip', '70%', 'micro irrigation', 'horticulture'],
     },
+
+    {
+        id: 'sub-biogas',
+        name: 'Biogas Plant Subsidy (NNBOMP)',
+        short_name: 'MNRE Biogas',
+        type: 'central',
+        category: 'energy',
+        crop_types: ['livestock', 'all'],
+        farmer_categories: ['all'],
+        states: ['all'],
+        benefit_type: 'grant',
+        subsidy_percent: 40,
+        max_benefit_inr: 50000,
+        description: '₹9,800 to ₹45,000 subsidy per plant for setting up family type biogas plants. Use cattle dung to produce free cooking gas and organic manure.',
+        eligibility: {
+            description: 'All households having at least 2-3 cattle. Subsidy varies based on plant size (1 to 25 cubic meters) and state category (North East states get higher subsidy).',
+            min_land_acres: 0,
+            farmer_types: ['all'],
+            crops: 'Not applicable (requires livestock)',
+        },
+        documents: [
+            'Aadhaar card',
+            'Bank passbook',
+            'Photo of cattle / shed',
+        ],
+        apply_steps: [
+            'Contact your District Rural Development Agency (DRDA) or KVIC office',
+            'Apply online on the MNRE Biogas portal (biogas.mnre.gov.in)',
+            'Choose an approved biogas plant model (Deenbandhu, etc.)',
+            'Plant is constructed by approved masons / turnkey agents',
+            'Subsidy released after post-construction inspection and functionality check',
+        ],
+        apply_link: 'https://biogas.mnre.gov.in',
+        deadline: 'Rolling — apply anytime. Target based allocation.',
+        helpline: '1800-11-8877',
+        last_updated: '2025-01',
+        tags: ['biogas', 'cooking gas', 'free fuel', 'livestock', 'dung', 'manure'],
+    },
+
+    {
+        id: 'sub-beekeeping',
+        name: 'Beekeeping / Honey Mission Subsidy',
+        short_name: 'NBHM',
+        type: 'central',
+        category: 'horticulture',
+        crop_types: ['honey', 'pollination'],
+        farmer_categories: ['all'],
+        states: ['all'],
+        benefit_type: 'percent_subsidy',
+        subsidy_percent: 40,
+        max_benefit_inr: 100000,
+        description: '40% to 50% subsidy for beehive boxes, honey extractors, and bee colonies. Increase crop yield by 20-30% through better pollination.',
+        eligibility: {
+            description: 'Individual farmers, SHGs and FPOs. Must undergo 7-day beekeeping training. Supported under National Beekeeping & Honey Mission (NBHM).',
+            min_land_acres: 0,
+            farmer_types: ['all'],
+            crops: 'All horticultural and agricultural crops benefit from pollination',
+        },
+        documents: [
+            'Aadhaar card',
+            'Training certificate (7 days)',
+            'Bank passbook',
+            'Land records or proof of space for beehives',
+        ],
+        apply_steps: [
+            'Register on the National Bee Board (NBB) portal: nbb.gov.in',
+            'Complete the 7-day basic beekeeping training at KVK or approved center',
+            'Submit application for bee boxes and colonies through the portal',
+            'District Horticulture Officer verifies and provides technical sanction',
+            'Purchase boxes from approved suppliers and get subsidy in bank',
+        ],
+        apply_link: 'https://nbb.gov.in',
+        deadline: 'Check with state horticulture department for annual window',
+        helpline: '011-23382417',
+        last_updated: '2025-01',
+        tags: ['beekeeping', 'honey', 'pollination', 'extra income', '40% subsidy', 'NBHM'],
+    },
 ];
 
 // ─── In-memory storage for subsidy applications ────────────────────────────
@@ -800,3 +877,4 @@ router.get('/application/:ref', (req, res) => {
 });
 
 module.exports = router;
+module.exports.SUBSIDIES = SUBSIDIES;

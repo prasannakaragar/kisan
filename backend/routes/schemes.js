@@ -337,6 +337,102 @@ const SCHEMES = [
     helpline: '1800-180-1551'
   },
 
+  {
+    id: 'pm-fme',
+    name: 'PM-FME',
+    full_name: 'PM Formalisation of Micro food processing Enterprises Scheme',
+    type: 'central',
+    category: 'business',
+    benefit: '35% credit-linked subsidy (max ₹10 lakh) for setting up or upgrading small food processing units (pickle, juice, flour mill, etc).',
+    benefit_amount: 1000000,
+    ministry: 'Ministry of Food Processing Industries',
+    last_updated: '2025-01',
+    eligibility: {
+      states: ['all'],
+      crops: ['all'],
+      farmer_type: ['all', 'shg', 'fpo', 'cooperative'],
+      min_land_acres: 0,
+      max_land_acres: null,
+      description: 'Individual micro-enterprises, SHGs, FPOs, and Cooperatives. Priority to "One District One Product" (ODOP) based units.'
+    },
+    documents: ['Aadhaar', 'PAN', 'Project report', 'Bank account', 'Address proof'],
+    apply_link: 'https://pmfme.mofpi.gov.in',
+    apply_steps: [
+      'Visit pmfme.mofpi.gov.in and register as an applicant',
+      'Prepare a simple project report for your food processing business',
+      'Select the ODOP (One District One Product) for your district if applicable',
+      'Submit application online — it will be verified by District Resource Person (DRP)',
+      'Bank will process loan and government will provide 35% subsidy'
+    ],
+    deadline: 'Rolling — ongoing scheme till 2025-26',
+    tags: ['food processing', 'business', '35% subsidy', 'ODOP', 'micro enterprise'],
+    helpline: '011-26406500'
+  },
+
+  {
+    id: 'pm-msy',
+    name: 'PM-MSY',
+    full_name: 'Pradhan Mantri Matsya Sampada Yojana',
+    type: 'central',
+    category: 'fisheries',
+    benefit: '40% to 60% subsidy for fish ponds, biofloc units, boats, and fish processing. SC/ST/Women get 60% subsidy.',
+    benefit_amount: null,
+    ministry: 'Department of Fisheries, Ministry of Fisheries, Animal Husbandry & Dairying',
+    last_updated: '2025-01',
+    eligibility: {
+      states: ['all'],
+      crops: ['fisheries', 'aquaculture'],
+      farmer_type: ['all', 'fishers', 'fish farmers', 'shg'],
+      min_land_acres: 0.1,
+      max_land_acres: null,
+      description: 'Fishers, Fish farmers, Fish workers, Fish vendors, SHGs, FPOs and SC/ST/Women farmers.'
+    },
+    documents: ['Aadhaar', 'Land/Water body records', 'Bank account', 'Project proposal'],
+    apply_link: 'https://pmmsy.dof.gov.in',
+    apply_steps: [
+      'Contact your District Fisheries Office or Assistant Director of Fisheries',
+      'Download application from pmmsy.dof.gov.in or collect from office',
+      'Submit project proposal for fish pond / unit along with land documents',
+      'Departmental committee will review and approve based on feasibility',
+      'Subsidy released in installments based on project progress'
+    ],
+    deadline: 'Annual — check with state fisheries department for current year window',
+    tags: ['fisheries', 'fish pond', '60% subsidy', 'aquaculture', 'blue revolution'],
+    helpline: '1800-425-1660'
+  },
+
+  {
+    id: 'nmeo-op',
+    name: 'NMEO-OP',
+    full_name: 'National Mission on Edible Oils – Oil Palm',
+    type: 'central',
+    category: 'horticulture',
+    benefit: '₹29,000 per hectare for planting material + maintenance. ₹50,000 for intercropping. Price assurance (Viability Gap Payment).',
+    benefit_amount: 29000,
+    ministry: 'Ministry of Agriculture & Farmers Welfare',
+    last_updated: '2025-01',
+    eligibility: {
+      states: ['all'],
+      crops: ['Oil Palm'],
+      farmer_type: ['all'],
+      min_land_acres: 0.5,
+      max_land_acres: null,
+      description: 'Farmers in notified districts with irrigation facilities. Special focus on North East and Andaman & Nicobar Islands.'
+    },
+    documents: ['Aadhaar', 'Land records', 'Bank passbook', 'Irrigation source proof'],
+    apply_link: 'https://nmeo.gov.in',
+    apply_steps: [
+      'Register on nmeo.gov.in or contact District Agriculture/Horticulture Officer',
+      'Verify if your district is notified for Oil Palm cultivation',
+      'Get seedlings from approved nurseries at subsidized rates',
+      'Govt provides maintenance subsidy for 4 years directly to bank',
+      'Fresh Fruit Bunches (FFB) price is assured by govt via Viability Price mechanism'
+    ],
+    deadline: 'Rolling — planting season (June-July) preferred',
+    tags: ['oil palm', 'edible oil', 'subsidy', 'price assurance', 'import substitution'],
+    helpline: '1800-180-1551'
+  },
+
   // ═══════════════════════════════════════════════════════════════
   //  KARNATAKA STATE SCHEMES
   // ═══════════════════════════════════════════════════════════════
@@ -1065,3 +1161,4 @@ router.post('/check-eligibility', (req, res) => {
 });
 
 module.exports = router;
+module.exports.SCHEMES = SCHEMES;

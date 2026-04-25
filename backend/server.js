@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 
 const cropPricesRouter = require('./routes/cropPrices');
 const schemesRouter = require('./routes/schemes');
+
 const labourRouter = require('./routes/labour');
 const marketplaceRouter = require('./routes/marketplace');
 const barterRouter = require('./routes/barter');
@@ -15,6 +16,9 @@ const financeRouter = require('./routes/finance');
 const businessRouter = require('./routes/business');
 const irrigationRouter = require('./routes/irrigation');
 const subsidyRouter = require('./routes/subsidy');
+const benefitsRouter = require('./routes/benefits');
+const aiChatRouter = require('./routes/aiChat');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -46,6 +50,7 @@ app.use(limiter);
 
 app.use('/api/prices', cropPricesRouter);
 app.use('/api/schemes', schemesRouter);
+
 app.use('/api/labour', labourRouter);
 app.use('/api/marketplace', marketplaceRouter);
 app.use('/api/barter', barterRouter);
@@ -56,6 +61,9 @@ app.use('/api/finance', financeRouter);
 app.use('/api/business', businessRouter);
 app.use('/api/irrigation', irrigationRouter);
 app.use('/api/subsidy', subsidyRouter);
+app.use('/api/benefits', benefitsRouter);
+app.use('/api/ai', aiChatRouter);
+
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
@@ -64,4 +72,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong. Please try again.' });
 });
 
-app.listen(PORT, () => console.log(`Kisan API running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Kisan Platform API running on port ${PORT}`));

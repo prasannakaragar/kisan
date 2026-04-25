@@ -1,6 +1,6 @@
 @echo off
 echo ==========================================
-echo   🌾 Starting Kisan Platform Super App 🌾
+echo   🌾 Starting Kisan Platform 🌾
 echo ==========================================
 
 start cmd /k "echo 🐍 Starting Crop Health AI API... && cd crop_health_api && python start.py"
