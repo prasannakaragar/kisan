@@ -96,7 +96,7 @@ export default function Barter() {
 
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))', gap:16 }}>
         {listings.map(l => (
-          <div key={l.id} className="card">
+          <div key={l._id} className="card">
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:12 }}>
               <div style={{ fontWeight:700, fontSize:15, color:'#374151' }}>
                 <span style={{ color:'#2d6a2d' }}>Has: {l.have_quantity} {l.have_unit} {l.have_crop}</span>

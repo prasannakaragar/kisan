@@ -146,7 +146,7 @@ function ApplyModal({ job, onClose }) {
     if (!form.worker_name || !form.worker_phone) { setError('Name and phone required'); return; }
     setLoading(true);
     try {
-      const res = await applyJob(job.id, form);
+      const res = await applyJob(job._id, form);
       setSuccess(res.message);
     } catch (e) { setError(e.message); }
     finally { setLoading(false); }
@@ -251,7 +251,7 @@ export default function Labour() {
       )}
 
       {(tab === 'urgent' ? jobs.filter(j => (j.workers_needed - j.workers_applied) <= 3) : jobs)
-        .map(job => <JobCard key={job.id} job={job} onApply={setApplyJobState} />)}
+        .map(job => <JobCard key={job._id} job={job} onApply={setApplyJobState} />)}
 
       {showPostModal && <PostJobModal onClose={() => setShowPostModal(false)} onSuccess={fetchJobs} />}
       {applyJob && <ApplyModal job={applyJob} onClose={() => { setApplyJobState(null); fetchJobs(); }} />}

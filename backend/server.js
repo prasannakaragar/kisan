@@ -2,6 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const mongoose = require('mongoose');
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB Successfully'))
+  .catch(err => console.error('MongoDB Connection Error:', err));
 
 const cropPricesRouter = require('./routes/cropPrices');
 const schemesRouter = require('./routes/schemes');

@@ -241,7 +241,7 @@ export default function Marketplace() {
       )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
-        {listings.map(l => <ListingCard key={l.id} listing={l} onContact={setSelectedListing} />)}
+        {listings.map(l => <ListingCard key={l._id} listing={l} onContact={setSelectedListing} />)}
       </div>
 
       {selectedListing && <ListingModal listing={selectedListing} onClose={() => setSelectedListing(null)} />}
