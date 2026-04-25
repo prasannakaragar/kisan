@@ -99,7 +99,7 @@ const SCHEMES = [
       description: 'All farmers including tenant farmers, sharecroppers, oral lessees. Also covers fishermen and animal husbandry farmers since 2020.'
     },
     documents: ['Aadhaar card', 'PAN card', 'Land records or lease agreement', 'Bank passbook', '2 passport photos', 'Crop details'],
-    apply_link: 'https://www.pmkisan.gov.in/kcc.aspx',
+    apply_link: 'https://fasalrin.gov.in',
     apply_steps: [
       'Visit any SBI, PNB, or nationalized bank branch near you',
       'Ask for Kisan Credit Card (KCC) application form — it\'s free',
@@ -196,7 +196,7 @@ const SCHEMES = [
       description: 'All farmers across India. Completely free. No income or land size restriction.'
     },
     documents: ['Aadhaar card', 'Land details (survey number)'],
-    apply_link: 'https://soilhealth.dac.gov.in',
+    apply_link: 'https://soilhealth.dac.gov.in/home',
     apply_steps: [
       'Contact your nearest Krishi Vigyan Kendra (KVK) or Agriculture Extension Officer',
       'Or apply online at soilhealth.dac.gov.in',
@@ -325,7 +325,7 @@ const SCHEMES = [
       description: 'All farmers. Scheme implemented through state agriculture departments. Benefits vary by state component.'
     },
     documents: ['Aadhaar', 'Land records', 'Bank account'],
-    apply_link: 'https://rkvy.nic.in',
+    apply_link: 'https://rkvy.dac.gov.in',
     apply_steps: [
       'Contact your state agriculture department or district agriculture office',
       'Ask about current RKVY components active in your district',
@@ -764,7 +764,7 @@ const SCHEMES = [
       description: 'Small and marginal farmers of Andhra Pradesh. State gives ₹7,500/acre on top of PM-KISAN ₹6,000 flat. Registered with AP Agriculture Dept.'
     },
     documents: ['Aadhaar', 'Land records (Pahani)', 'Bank account linked to Aadhaar', 'Mobile number'],
-    apply_link: 'https://apagrisnet.ap.gov.in',
+    apply_link: 'https://ysrrythubharosa.ap.gov.in',
     apply_steps: [
       'Visit nearest Village Agriculture Assistant (VAA) or Rythu Bharosa Centre',
       'Or apply at village secretariat with Aadhaar and land documents',
@@ -801,7 +801,7 @@ const SCHEMES = [
       description: 'All land-owning farmers of Telangana. Per-acre scheme — more land = more benefit. Auto-enrolled based on land records.'
     },
     documents: ['Aadhaar', 'Pahani (land record)', 'Bank account linked to Aadhaar'],
-    apply_link: 'https://rythu.telangana.gov.in',
+    apply_link: 'https://rythubharosa.telangana.gov.in',
     apply_steps: [
       'Auto-enrolled if your land records are updated in Dharani portal',
       'Ensure Pahani (land record) is in your name and linked to Aadhaar',

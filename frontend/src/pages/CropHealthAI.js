@@ -75,7 +75,7 @@ function ConfidenceBar({ value }) {
 
 
 // ─── Result card ──────────────────────────────────────────────────────────────
-function ResultCard({ result, imageUrl }) {
+function ResultCard({ result, imageUrl, userLocation }) {
   const noCropDetected = result.isCropDetected === false || !result.crop || result.crop.toLowerCase() === 'none' || result.crop.toLowerCase().includes('not detected') || result.crop.toLowerCase().includes('unknown') || result.crop.toLowerCase().includes('not a plant') || result.crop.toLowerCase().includes('not a crop');
   
   const isHealthy = result.isHealthy;
@@ -159,6 +159,70 @@ function ResultCard({ result, imageUrl }) {
             )}
           </>
         )}
+
+        {/* Nearby Shops Map Button */}
+        <div style={{
+          background: '#f8fafc',
+          border: '2.2px dashed #94a3b8',
+          borderRadius: 14,
+          padding: '16px',
+          textAlign: 'center',
+          marginTop: 6
+        }}>
+          <div style={{ fontSize: 13, color: '#475569', fontWeight: 600, marginBottom: 8 }}>
+            🛍️ Need treatment or fertilizers?
+          </div>
+          {userLocation ? (
+            <div style={{ fontSize: 11, color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 10 }}>
+              <span style={{ fontSize: 14 }}>📍</span> Detected: {userLocation.lat.toFixed(2)}, {userLocation.lng.toFixed(2)} (Near You)
+            </div>
+          ) : (
+            <div style={{ fontSize: 11, color: '#64748b', marginBottom: 10 }}>
+              Finding best shops for your area...
+            </div>
+          )}
+          <button
+            onClick={() => {
+              const query = encodeURIComponent('fertilizer shops near me');
+              const url = userLocation
+                ? `https://www.google.com/maps/search/${query}/@${userLocation.lat},${userLocation.lng},14z`
+                : `https://www.google.com/maps/search/${query}`;
+              window.open(url, '_blank');
+            }}
+            style={{
+              background: '#2563eb',
+              color: 'white',
+              border: 'none',
+              borderRadius: 10,
+              padding: '10px 20px',
+              fontWeight: 700,
+              fontSize: 14,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              width: '100%',
+              boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
+            }}
+          >
+            📍 Open Map Near Me
+          </button>
+          {!userLocation && (
+            <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 8 }}>
+              (Note: Turn on GPS for better results)
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.location.reload(); // Simple way to re-trigger the useEffect location fetch
+                }}
+                style={{ background: 'none', border: 'none', color: '#2563eb', textDecoration: 'underline', cursor: 'pointer', marginLeft: 4 }}
+              >
+                Refresh Location
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -225,6 +289,7 @@ export default function CropHealthAI() {
   const [cameraActive, setCameraActive] = useState(false);
   const [history, setHistory]       = useState(loadHistory);
   const [datasetStatus, setDatasetStatus] = useState('Checking...');
+  const [userLocation, setUserLocation] = useState(null);
 
   const fileInputRef  = useRef();
   const videoRef      = useRef();
@@ -236,6 +301,17 @@ export default function CropHealthAI() {
       .then(res => res.json())
       .then(data => setDatasetStatus(data.datasetStatus || 'Not found'))
       .catch(() => setDatasetStatus('API Offline'));
+
+    // Fetch user location for nearby shops
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        },
+        (err) => console.warn("Geolocation error:", err.message),
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    }
 
     // Cleanup on unmount
     return () => {
@@ -507,7 +583,7 @@ export default function CropHealthAI() {
 
       {/* ── Result ── */}
       {result && imageUrl && !loading && (
-        <ResultCard result={result} imageUrl={imageUrl} />
+        <ResultCard result={result} imageUrl={imageUrl} userLocation={userLocation} />
       )}
 
       {/* ── Tip box ── */}
