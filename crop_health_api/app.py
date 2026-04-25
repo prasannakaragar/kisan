@@ -29,7 +29,9 @@ else:
 
 app = Flask(__name__)
 # Allow CORS for local development and potential production domains
-CORS(app, origins=["http://localhost:3000", "https://*.vercel.app"])
+# Allow CORS for local development and production domains
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://kisan-wheat.vercel.app", "https://kisan-platform.vercel.app"]}})
+
 
 MAX_BYTES = 8 * 1024 * 1024  # 8 MB limit
 
